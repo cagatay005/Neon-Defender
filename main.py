@@ -658,13 +658,11 @@ class Boss(pygame.sprite.Sprite):
         vx = math.cos(angle_rad) * 12
         vy = math.sin(angle_rad) * 12
         
-        # Mermiyi biraz daha büyük ve tehlikeli çizelim
         b = Bullet(self.rect.centerx, self.rect.centery, 25, (255, 255, 255), vx, vy, (15, 15))
         bullets.append(b)
         return bullets
 
     def draw_health(self, surface):
-        # Mevcut kodundaki health bar aynen kalabilir
         pygame.draw.rect(surface, BLACK, (WIDTH//2 - 250, 10, 500, 25))
         ratio = max(0, self.hp / self.max_hp)
         col = (255, 50, 0) if self.phase == 2 else (200, 0, 0)
@@ -912,7 +910,7 @@ class Game:
         auto_w = card_w; auto_h = 110; auto_x = WIDTH // 2 - auto_w // 2
         
         auto_filename = self.get_save_path("autosave.json")
-        atext = "" # <-- Burası da boş bırakıldı
+        atext = "" 
         
         if os.path.exists(auto_filename):
             try:
@@ -1048,10 +1046,10 @@ class Game:
                     if self.stats['double_shot']: # Satın alınmışsa
                         btn.disabled = False
                         if self.stats.get('active_double', True): # Takılıysa
-                            btn.text = "UNEQUIP DOUBLE" # <-- DÜZELTİLDİ
+                            btn.text = "UNEQUIP DOUBLE" 
                             btn.base_color = (100, 50, 50) 
                         else:
-                            btn.text = "EQUIP DOUBLE"   # <-- DÜZELTİLDİ
+                            btn.text = "EQUIP DOUBLE"   
                             btn.base_color = (50, 100, 50) 
                     else: 
                         btn.text = "DOUBLE SHOT - $500"
@@ -1063,10 +1061,10 @@ class Game:
                     if self.stats['has_drone']:
                         btn.disabled = False
                         if self.stats.get('active_drone', True):
-                            btn.text = "UNEQUIP DRONE" # <-- DÜZELTİLDİ
+                            btn.text = "UNEQUIP DRONE" 
                             btn.base_color = (100, 50, 50)
                         else:
-                            btn.text = "EQUIP DRONE"   # <-- DÜZELTİLDİ
+                            btn.text = "EQUIP DRONE"  
                             btn.base_color = (50, 100, 50)
                     else:
                         btn.text = "ATTACK DRONE - $1000"
@@ -1078,10 +1076,10 @@ class Game:
                     if self.stats['has_missiles']:
                         btn.disabled = False
                         if self.stats.get('active_missile', True):
-                            btn.text = "UNEQUIP MISSILE" # <-- DÜZELTİLDİ
+                            btn.text = "UNEQUIP MISSILE" 
                             btn.base_color = (100, 50, 50)
                         else:
-                            btn.text = "EQUIP MISSILE"   # <-- DÜZELTİLDİ
+                            btn.text = "EQUIP MISSILE"   
                             btn.base_color = (50, 100, 50)
                     else:
                         btn.text = "HOMING MISSILES - $1500"
@@ -1126,7 +1124,7 @@ class Game:
         self.combo_count = 0; self.combo_timer = 0; self.max_combo = 0 
         self.emp_active = False; self.emp_radius = 0; self.emp_targets = []
 
-        # --- YENİ EKLENENLER (BAŞARIM & OTO-KAYIT) ---w
+        # --- BAŞARIM & OTO-KAYIT ---
         self.boss_just_killed = False     
         self.last_shot_time = time.time() 
         self.last_ulti_kill_count = 0     
@@ -1333,7 +1331,7 @@ class Game:
                                             self.sound.play("error")
                                             self.texts.add(FloatingText("EMPTY SLOT", btn.rect.centerx, btn.rect.top, RED))
 
-                                # --- SİLME İŞLEMİ (BU ELIF ARTIK DOĞRU HİZADA) ---
+                                # --- SİLME İŞLEMİ ---
                                 elif btn.action_code.startswith("DEL_"):
                                     self.pending_slot = int(btn.action_code.split("_")[1])
                                     self.state = "CONFIRM_DELETE"
@@ -1447,7 +1445,7 @@ class Game:
                                          self.texts.add(FloatingText(f"{self.last_ulti_kill_count} KILLS!", WIDTH//2, HEIGHT//2 + 40, YELLOW, 30))
 
                         elif "MARKET" in self.state:
-                            # --- 1. KLAVYE KISAYOLLARI (YENİ EKLENEN) ---
+                            # --- 1. KLAVYE KISAYOLLARI ---
                             if event.type == pygame.KEYDOWN:
                                 # ESC Tuşu: Geldiği yere (Menü veya Oyun) geri döner
                                 if event.key == pygame.K_ESCAPE:
@@ -1777,7 +1775,7 @@ class Game:
                         bullet = enemy.update()
                         if bullet: self.boss_bullets.add(bullet); self.all_sprites.add(bullet); self.sound.play("enemy_shoot")
 
-                    # --- YENİ BOSS GÜNCELLEME BLOĞU (BURASI DEĞİŞTİ) ---
+                    # --- BOSS GÜNCELLEME BLOĞU ---
                     if self.boss:
                         # 1. Player'ın konumunu belirle (Nişan alabilmesi için)
                         # Eğer oyuncu ölüyse veya "dash" atıyorsa (görünmezse) boss kör atış yapsın
@@ -1809,7 +1807,7 @@ class Game:
                         self.autosave_timer = 0
                         self.texts.add(FloatingText("AUTO BACKUP", WIDTH - 80, HEIGHT - 30, ORANGE, 14, vy=0, life=60))
 
-                    # --- YENİ GANİMET SİSTEMİ (SENİN AYARLARIN) ---
+                    # --- GANİMET SİSTEMİ ---
                     hits = pygame.sprite.groupcollide(self.enemies, self.bullets, False, True)
                     for enemy, bullet_list in hits.items():
                         for b in bullet_list:
@@ -1828,7 +1826,7 @@ class Game:
                         if enemy.hp <= 0:
                             enemy.kill(); self.sound.play("explosion")
                             
-                            # 1. KOMBO SİSTEMİ (Aynen Korundu)
+                            # 1. KOMBO SİSTEMİ
                             self.player.add_ulti(5)
                             self.combo_count += 1
                             if self.combo_count > self.max_combo: self.max_combo = self.combo_count
@@ -1838,13 +1836,13 @@ class Game:
                                 self.texts.add(FloatingText(f"{self.combo_count}x COMBO!", enemy.rect.centerx, enemy.rect.centery - 20, CYAN, 24))
                                 if self.combo_count % 5 == 0: self.sound.play("combo")
 
-                            # 2. PARA HESAPLAMA (Senin İstediğin Değerler)
-                            base_money = 5 # Normal (Kırmızı) -> 15$
+                            # 2. PARA HESAPLAMA
+                            base_money = 5 # Normal (Kırmızı) -> 5$
                             
                             if enemy.type == "fast": 
-                                base_money = 15 # Hızlı (Turuncu) -> 25$
+                                base_money = 15 # Hızlı (Turuncu) -> 15$
                             elif enemy.type == "tank": 
-                                base_money = 25 # Tank (Yeşil) -> 40$
+                                base_money = 25 # Tank (Yeşil) -> 25$
                             
                             # Kombo Çarpanını Uygula
                             # Örnek: 10 Kombo varsa (2.0x), Kırmızı gemi 20$ verir.
@@ -1965,7 +1963,7 @@ class Game:
                         start_y = cy - (total_height // 2) + 10
                         
                         for idx, line in enumerate(lines):
-                            # --- RENK VE FONT SEÇİMİ (DÜZELTİLDİ) ---
+                            # --- RENK VE FONT SEÇİMİ ---
                             is_header = False
                             
                             # 1. Başlıklar: Eğer buton seçiliyse (üzerine gelindiyse) BEYAZ yap, yoksa kendi rengini kullan.
@@ -1977,7 +1975,6 @@ class Game:
                                 col = GRAY; font = self.font_large; is_header = True
                                 
                             elif "AUTO" in line: 
-                                # SORUNU ÇÖZEN SATIR BURASI:
                                 col = WHITE if btn.selected else ORANGE 
                                 font = self.font_large; is_header = True
                             
@@ -2005,8 +2002,7 @@ class Game:
                 self.draw_text("OVERWRITE SLOT?", self.font_large, WHITE, WIDTH//2, HEIGHT//2 - 50)
                 self.draw_text("Current progress will be lost!", self.font_small, YELLOW, WIDTH//2, HEIGHT//2)
                 self.draw_text("Press [Y] YES  /  [N] NO", self.font_large, WHITE, WIDTH//2, HEIGHT//2 + 60)
-            
-            # --- YENİ EKLENECEK KISIM ---
+        
             elif self.state == "CONFIRM_DELETE":
                 # Arkaplanı karart
                 overlay = pygame.Surface((WIDTH, HEIGHT))
