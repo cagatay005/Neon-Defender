@@ -1,4 +1,4 @@
-# 🌌 NEON DEFENDER
+# NEON DEFENDER
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue?style=for-the-badge)
 ![Python](https://img.shields.io/badge/Python-3.8%2B-yellow?style=for-the-badge&logo=python)
@@ -14,7 +14,7 @@ What distinguishes this project is its **zero-asset architecture**. It relies on
 
 ---
 
-## 📸 Gameplay Showcase
+## Gameplay Showcase
 
 ### Intense Boss Battles
 The adaptive Boss AI uses complex trigonometric patterns to challenge the player.
@@ -28,7 +28,7 @@ Players can unleash devastating ultimate abilities to turn the tide of battle.
 
 ---
 
-## ⚙️ Key Engineering Features
+## Key Engineering Features
 
 This project serves as a demonstration of several advanced computer engineering concepts applied to game development:
 
@@ -55,7 +55,7 @@ A decoupled `AchievementManager` handles progression tracking outside the main g
 
 ---
 
-## 🎮 Gameplay Overview
+## Gameplay Overview
 
 ### Ship Classes
 Choose from 4 distinct strategic hulls at the start:
@@ -69,7 +69,7 @@ Accessible via the main menu or in-game (`I` key). Players can spend currency on
 
 ---
 
-## 🕹️ Controls
+## Controls
 
 | Key | Action | Description |
 | :--- | :--- | :--- |
@@ -83,7 +83,7 @@ Accessible via the main menu or in-game (`I` key). Players can spend currency on
 
 ---
 
-## 🛠️ Installation & Usage
+## Installation & Usage
 
 Python 3.x is required to run this project.
 
@@ -98,10 +98,10 @@ pip install -r requirements.txt
 ```
 **3. Run the Game:**
 ```bash
-python game.py
+python main.py
 ```
 👨‍💻 Author
-[Mustafa Cagatay Ozdem] - Computer Engineering Student @ KTÜ
+Mustafa Cagatay Ozdem - Computer Engineering Student @ KTÜ
 
 GitHub: https://github.com/cagatay005
 
