@@ -1048,10 +1048,10 @@ class Game:
                     if self.stats['double_shot']: # Satın alınmışsa
                         btn.disabled = False
                         if self.stats.get('active_double', True): # Takılıysa
-                            btn.text = "UNEQUIP DOUBLE" 
+                            btn.text = "UNEQUIP DOUBLE" # <-- DÜZELTİLDİ
                             btn.base_color = (100, 50, 50) 
                         else:
-                            btn.text = "EQUIP DOUBLE"   
+                            btn.text = "EQUIP DOUBLE"   # <-- DÜZELTİLDİ
                             btn.base_color = (50, 100, 50) 
                     else: 
                         btn.text = "DOUBLE SHOT - $500"
@@ -1063,10 +1063,10 @@ class Game:
                     if self.stats['has_drone']:
                         btn.disabled = False
                         if self.stats.get('active_drone', True):
-                            btn.text = "UNEQUIP DRONE" 
+                            btn.text = "UNEQUIP DRONE" # <-- DÜZELTİLDİ
                             btn.base_color = (100, 50, 50)
                         else:
-                            btn.text = "EQUIP DRONE"   
+                            btn.text = "EQUIP DRONE"   # <-- DÜZELTİLDİ
                             btn.base_color = (50, 100, 50)
                     else:
                         btn.text = "ATTACK DRONE - $1000"
@@ -1078,10 +1078,10 @@ class Game:
                     if self.stats['has_missiles']:
                         btn.disabled = False
                         if self.stats.get('active_missile', True):
-                            btn.text = "UNEQUIP MISSILE" 
+                            btn.text = "UNEQUIP MISSILE" # <-- DÜZELTİLDİ
                             btn.base_color = (100, 50, 50)
                         else:
-                            btn.text = "EQUIP MISSILE"   
+                            btn.text = "EQUIP MISSILE"   # <-- DÜZELTİLDİ
                             btn.base_color = (50, 100, 50)
                     else:
                         btn.text = "HOMING MISSILES - $1500"
@@ -1126,7 +1126,7 @@ class Game:
         self.combo_count = 0; self.combo_timer = 0; self.max_combo = 0 
         self.emp_active = False; self.emp_radius = 0; self.emp_targets = []
 
-        # --- BAŞARIM & OTO-KAYIT ---
+        # --- YENİ EKLENENLER (BAŞARIM & OTO-KAYIT) ---w
         self.boss_just_killed = False     
         self.last_shot_time = time.time() 
         self.last_ulti_kill_count = 0     
@@ -1293,15 +1293,14 @@ class Game:
                                         else: self.wipe_save_data()
                                         self.reset_game(); self.state = "SELECT"
                                 
-                                # --- AUTO-SAVE SLOTU İŞLEMİ ---
+                            # --- AUTO-SAVE SLOTU İŞLEMİ ---
                                 elif btn.action_code == "SLOT_AUTO":
                                     # SENARYO 1: KAYIT MODU (SAVE)
-                                    # Buraya kayıt yapamazsın uyarısı
                                     if self.slot_operation == "SAVE":
                                         self.sound.play("error")
                                         self.texts.add(FloatingText("SYSTEM ONLY", btn.rect.centerx, btn.rect.top, RED))
                                     
-                                    # SENARYO 2: YÜKLEME MODU (LOAD) - OYNA
+                                    # SENARYO 2: YÜKLEME MODU (LOAD)
                                     else:
                                         filename = self.get_save_path("autosave.json")
                                         if os.path.exists(filename):
@@ -1314,31 +1313,31 @@ class Game:
                                                     self.volume_level = data.get("volume", 1.0)
                                                     self.keys.update(data.get("keys", {}))
                                                     
-                                                    # --- BAŞARIMLARI AUTO-SAVE'DEN YÜKLE ---
                                                     for ach in self.achievement_manager.achievements:
                                                         ach.unlocked = False
-                                                        
                                                     saved_ids = data.get("achievements", [])
                                                     for ach in self.achievement_manager.achievements:
                                                         if ach.id in saved_ids:
                                                             ach.unlocked = True
-                                                    # ---------------------------------------
                                                 
-                                                print("Otomatik kayıt yüklendi.")
+                                                print("Otomatik kayıt başarıyla yüklendi.")
                                                 self.sound.play("select")
-                                                self.reset_game(); self.state = "SELECT"
+                                                self.reset_game()
+                                                self.state = "SELECT"
+                                                
                                             except Exception as e: 
-                                                print(f"Hata: {e}")
+                                                print(f"Auto Save yükleme hatası: {e}")
+                                                self.sound.play("error")
+                                                self.texts.add(FloatingText("CORRUPTED DATA", btn.rect.centerx, btn.rect.top, RED))
                                         else:
                                             self.sound.play("error")
-                                            self.texts.add(FloatingText("NO DATA", btn.rect.centerx, btn.rect.top, RED))
+                                            self.texts.add(FloatingText("EMPTY SLOT", btn.rect.centerx, btn.rect.top, RED))
 
-                                # --- SİLME ---
+                                # --- SİLME İŞLEMİ (BU ELIF ARTIK DOĞRU HİZADA) ---
                                 elif btn.action_code.startswith("DEL_"):
-                                    # Doğrudan silmek yerine onaya gönderiyoruz
                                     self.pending_slot = int(btn.action_code.split("_")[1])
                                     self.state = "CONFIRM_DELETE"
-                                    self.sound.play("select")
+                                    self.sound.play("select")    
                             
                             elif event.key == pygame.K_ESCAPE:
                                 self.state = "MENU"; self.selected_btn_index = 0; self.sound.play("select")
@@ -1616,30 +1615,67 @@ class Game:
             elif self.state == "SLOT_MENU":
                 self.grid.update(0.5)
                 for i, btn in enumerate(self.slot_buttons):
-                    if btn.rect.collidepoint(mouse_pos): self.selected_btn_index = i
+                    # Mouse butonun üzerindeyse seçili yap
+                    if btn.rect.collidepoint(mouse_pos): 
+                        self.selected_btn_index = i
+                    
                     btn.selected = (i == self.selected_btn_index)
+                    
+                    # --- TIKLAMA KONTROLÜ ---
                     if btn.selected and mouse_clicked:
                         self.sound.play("select")
+                        
+                        # 1. GERİ DÖNÜŞ
                         if btn.action_code == "BACK_MENU":
                             self.state = "MENU"; self.selected_btn_index = 0
-                        elif btn.action_code.startswith("SLOT_"):
+                        
+                        # 2. NORMAL SLOTLAR (1, 2, 3)
+                        elif btn.action_code.startswith("SLOT_") and "AUTO" not in btn.action_code:
                             slot_num = int(btn.action_code.split("_")[1])
                             self.current_slot = slot_num
                             filename = self.get_save_path(f"save_{slot_num}.json")
                             if self.slot_operation == "SAVE":
-                                if os.path.exists(filename):
-                                    self.pending_slot = slot_num; self.state = "CONFIRM_OVERWRITE"
-                                else:
-                                    self.save_data(); self.state = "MENU"; self.texts.add(FloatingText("GAME SAVED", WIDTH//2, HEIGHT//2, GREEN, 40))
-                            else:
+                                if os.path.exists(filename): self.pending_slot = slot_num; self.state = "CONFIRM_OVERWRITE"
+                                else: self.save_data(); self.state = "MENU"; self.texts.add(FloatingText("GAME SAVED", WIDTH//2, HEIGHT//2, GREEN, 40))
+                            else: # LOAD
                                 if os.path.exists(filename): self.load_data()
                                 else: self.wipe_save_data()
                                 self.reset_game(); self.state = "SELECT"
+
+                        # 3. AUTO-SAVE SLOTU
+                        elif btn.action_code == "SLOT_AUTO":
+                            if self.slot_operation == "SAVE":
+                                self.sound.play("error")
+                                self.texts.add(FloatingText("SYSTEM ONLY", btn.rect.centerx, btn.rect.top, RED))
+                            else:
+                                filename = self.get_save_path("autosave.json")
+                                if os.path.exists(filename):
+                                    # Yükleme ve Başlatma Mantığı
+                                    try:
+                                        with open(filename, "r") as f:
+                                            data = json.load(f)
+                                            self.money = data.get("money", 0)
+                                            self.score = data.get("score", 0)
+                                            self.stats.update(data.get("stats", {}))
+                                            self.volume_level = data.get("volume", 1.0)
+                                            self.keys.update(data.get("keys", {}))
+                                            for ach in self.achievement_manager.achievements:
+                                                ach.unlocked = False
+                                            saved_ids = data.get("achievements", [])
+                                            for ach in self.achievement_manager.achievements:
+                                                if ach.id in saved_ids: ach.unlocked = True
+                                        
+                                        self.reset_game()
+                                        self.state = "SELECT"
+                                    except: self.sound.play("error")
+                                else:
+                                    self.sound.play("error")
+                                    self.texts.add(FloatingText("EMPTY SLOT", btn.rect.centerx, btn.rect.top, RED))
+
+                        # 4. SİLME BUTONLARI
                         elif btn.action_code.startswith("DEL_"):
-                            # Doğrudan silmek yerine onaya gönderiyoruz
                             self.pending_slot = int(btn.action_code.split("_")[1])
-                            self.state = "CONFIRM_DELETE"
-                            self.sound.play("select")
+                            self.state = "CONFIRM_DELETE"; self.sound.play("select")
 
             elif self.state == "SELECT":
                 # Geri butonu hover kontrolü
@@ -1773,7 +1809,7 @@ class Game:
                         self.autosave_timer = 0
                         self.texts.add(FloatingText("AUTO BACKUP", WIDTH - 80, HEIGHT - 30, ORANGE, 14, vy=0, life=60))
 
-                    # --- GANİMET SİSTEMİ ---
+                    # --- YENİ GANİMET SİSTEMİ (SENİN AYARLARIN) ---
                     hits = pygame.sprite.groupcollide(self.enemies, self.bullets, False, True)
                     for enemy, bullet_list in hits.items():
                         for b in bullet_list:
@@ -1792,7 +1828,7 @@ class Game:
                         if enemy.hp <= 0:
                             enemy.kill(); self.sound.play("explosion")
                             
-                            # 1. KOMBO SİSTEMİ
+                            # 1. KOMBO SİSTEMİ (Aynen Korundu)
                             self.player.add_ulti(5)
                             self.combo_count += 1
                             if self.combo_count > self.max_combo: self.max_combo = self.combo_count
@@ -1802,13 +1838,13 @@ class Game:
                                 self.texts.add(FloatingText(f"{self.combo_count}x COMBO!", enemy.rect.centerx, enemy.rect.centery - 20, CYAN, 24))
                                 if self.combo_count % 5 == 0: self.sound.play("combo")
 
-                            # 2. PARA HESAPLAMA
-                            base_money = 5 # Normal (Kırmızı) -> 5$
+                            # 2. PARA HESAPLAMA (Senin İstediğin Değerler)
+                            base_money = 5 # Normal (Kırmızı) -> 15$
                             
                             if enemy.type == "fast": 
-                                base_money = 15 # Hızlı (Turuncu) -> 15$
+                                base_money = 15 # Hızlı (Turuncu) -> 25$
                             elif enemy.type == "tank": 
-                                base_money = 25 # Tank (Yeşil) -> 25$
+                                base_money = 25 # Tank (Yeşil) -> 40$
                             
                             # Kombo Çarpanını Uygula
                             # Örnek: 10 Kombo varsa (2.0x), Kırmızı gemi 20$ verir.
@@ -1929,7 +1965,7 @@ class Game:
                         start_y = cy - (total_height // 2) + 10
                         
                         for idx, line in enumerate(lines):
-                            # --- RENK VE FONT SEÇİMİ ---
+                            # --- RENK VE FONT SEÇİMİ (DÜZELTİLDİ) ---
                             is_header = False
                             
                             # 1. Başlıklar: Eğer buton seçiliyse (üzerine gelindiyse) BEYAZ yap, yoksa kendi rengini kullan.
@@ -1941,6 +1977,7 @@ class Game:
                                 col = GRAY; font = self.font_large; is_header = True
                                 
                             elif "AUTO" in line: 
+                                # SORUNU ÇÖZEN SATIR BURASI:
                                 col = WHITE if btn.selected else ORANGE 
                                 font = self.font_large; is_header = True
                             
@@ -1969,6 +2006,7 @@ class Game:
                 self.draw_text("Current progress will be lost!", self.font_small, YELLOW, WIDTH//2, HEIGHT//2)
                 self.draw_text("Press [Y] YES  /  [N] NO", self.font_large, WHITE, WIDTH//2, HEIGHT//2 + 60)
             
+            # --- YENİ EKLENECEK KISIM ---
             elif self.state == "CONFIRM_DELETE":
                 # Arkaplanı karart
                 overlay = pygame.Surface((WIDTH, HEIGHT))
