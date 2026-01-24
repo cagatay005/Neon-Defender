@@ -100,8 +100,8 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
-👨‍💻 Author
-Mustafa Cagatay Ozdem - Computer Engineering Student @ KTÜ
+##Author
+Mustafa Cagatay Ozdem - Computer Engineering Student
 
 GitHub: https://github.com/cagatay005
 
